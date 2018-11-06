@@ -21,6 +21,7 @@
 
 <!-- Set architecture -->
 <set name="TOOLCHAIN" value="llvm" if="HXCPP_CLANG" />
+<set name="NO_PRECOMPILED_HEADERS" value="1" if="HXCPP_CLANG"/>
 
 <section if="HXCPP_X86">
   <set name="ARCH" value="-x86" />
@@ -43,7 +44,7 @@
 
   <!-- Force API 28 for now -->
   <set name="ANDROID_API" value="28"  if="HXCPP_CLANG"/>
-  <set name="PLATFORM" value="android-28" if="HXCPP_CLANG" />
+  <!--<set name="PLATFORM" value="android-28" if="HXCPP_CLANG" />-->
 
   <set name="PLATFORM" value="android-${ANDROID_API}" unless="PLATFORM" />
   <set name="TARGET" value="armv7-none-linux-androideabi" if="HXCPP_CLANG" />
@@ -98,7 +99,7 @@
   <flag value="-I${HXCPP}/include"/>
   <flag value="-Iinclude"/>
   <flag value="-fpic"/>
-  <flag value="-fpie" if="HXCPP_CLANG"/>
+  <!--<flag value="-fpie" if="HXCPP_CLANG"/>-->
   <flag value="-fvisibility=hidden"/>
   <flag value="-ffunction-sections"/>
   <flag value="-funwind-tables"/>
@@ -110,7 +111,7 @@
   <flag value="-D_LINUX_STDDEF_H "/> <!-- Avoid compiler including 2 version of file -->
   <flag value="-Wno-psabi" unless="HXCPP_CLANG" />
   <flag value="--target=${TRIPLE}" if="HXCPP_CLANG" />
-  <!--<flag value="-stdlib=libc++" if="HXCPP_CLANG" />-->
+  <flag value="-stdlib=libc++" if="HXCPP_CLANG" />
   <cppflag value="-std=c++11" if="HXCPP_CPP11"/>
   <flag value="-DHXCPP_CPP11" if="HXCPP_CPP11"/>
 
@@ -149,7 +150,7 @@
   <flag value="-DHX_ANDROID"/>
   <flag value="${ANDROID_PLATFORM_DEFINE}"/>
   <!-- todo <flag value="-Werror"/> -->
-  <flag value="-Wa,--noexecstack"/>
+  <flag value="-Wa,--noexecstack" unless="HXCPP_CLANG"/>
   <flag value="-O2" unless="debug || HXCPP_OPTIMIZE_FOR_SIZE || HXCPP_OPTIMIZE_FOR_FAST"/>
   <section if="HXCPP_OPTIMIZE_FOR_SIZE" unless="debug || HXCPP_OPTIMIZE_FOR_FAST">
 	  <!-- see https://software.intel.com/en-us/blogs/2013/01/17/x86-gcc-code-size-optimizations -->
@@ -186,6 +187,7 @@
   <flag value="-nostdlib"/>
   <flag value="-lstdc++" if="HXCPP_CLANG"/>
   <!--<flag value="-stdlib=libc++" if="HXCPP_CLANG" />-->
+  <flag value="--target=${TRIPLE}" if="HXCPP_CLANG" />
   <flag value="-std=c++11" if="HXCPP_CPP11"/>
   <flag value="--verbose" if="HXCPP_CLANG"/>
   <flag value="-Wl,-shared,-Bsymbolic" unless="HXCPP_CLANG"/>
@@ -199,8 +201,7 @@
   <flag value="-Wl,--no-undefined" unless="dll_import || HXCPP_CLANG" />
   <flag value="-Wl,--unresolved-symbols=ignore-in-object-files" if="dll_import" />
   <flag value="-Wl,-z,noexecstack" unless="HXCPP_CLANG"/>
-  <flag value="-Wl,noexecstack" if="HXCPP_CLANG"/>
-  <flag value="-Wl,pie" if="HXCPP_CLANG"/>
+  <!--<flag value="-Wl,--pie" if="HXCPP_CLANG"/>-->
   <flag value="--sysroot=${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}"/>
   <flag value="-L${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib"/>
 
