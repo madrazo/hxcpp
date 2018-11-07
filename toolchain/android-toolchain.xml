@@ -102,7 +102,7 @@
   <!--<flag value="-fpie" if="HXCPP_CLANG"/>-->
   <flag value="-fvisibility=hidden"/>
   <flag value="-ffunction-sections"/>
-  <flag value="-funwind-tables"/>
+  <flag value="-funwind-tables"  unless="HXCPP_CLANG"/>
   <flag value="-fstack-protector"/>
   <flag value="-fno-short-enums"/>
   <flag value="-Wno-overflow" />
@@ -186,7 +186,7 @@
   <flag value="-frtti"/>
   <flag value="-nostdlib"/>
   <!--<flag value="-nostdlib++"  if="HXCPP_CLANG"/>-->
-  <flag value="-lstdc++" if="HXCPP_CLANG"/>
+  <!--<flag value="-lstdc++" if="HXCPP_CLANG"/>-->
   <!--<flag value="-stdlib=libc++" if="HXCPP_CLANG" />-->
   <flag value="--target=${TRIPLE}" if="HXCPP_CLANG" />
   <flag value="-std=c++11" if="HXCPP_CPP11"/>
@@ -200,7 +200,7 @@
     <flag value="-Wl,--strip-all" unless="HXCPP_DEBUG_LINK"/>
   </section>
   <flag value="-Wl,--no-undefined" unless="dll_import || HXCPP_CLANG" />
-  <flag value="-Wl,--unresolved-symbols=ignore-in-object-files" if="dll_import" />
+  <flag value="-Wl,--unresolved-symbols=ignore-in-object-files" if="dll_import|| HXCPP_CLANG" />
   <flag value="-Wl,-z,noexecstack" unless="HXCPP_CLANG"/>
   <!--
   <flag value="-Wl,-exclude-library,libgcc.a" if="HXCPP_CLANG"/>
@@ -225,10 +225,10 @@
     <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libunwind.a"/>
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libstdc++.a"/>
-    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_so.o"/>
 -->
-  <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so"/>
-  <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_so.o"/>
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so"/>
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
 
 <!--
     <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libandroid_support.a" />
