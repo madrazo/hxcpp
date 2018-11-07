@@ -66,6 +66,7 @@
 <set name="HXCPP_AR" value="${EXEPREFIX}-ar"  unless="HXCPP_CLANG"/>
 <set name="HXCPP_AR" value="${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/windows-x86_64/arm-linux-androideabi/bin/ar.exe"  if="HXCPP_CLANG"/>
 <set name="HXCPP_RANLIB" value="${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/windows-x86_64/arm-linux-androideabi/bin/ranlib.exe"  if="HXCPP_CLANG"/>
+<set name="HXCPP_STRIP" value="${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/windows-x86_64/arm-linux-androideabi/bin/strip.exe"  if="HXCPP_CLANG"/>
 
 <include name="toolchain/gcc-toolchain.xml"/>
 
