@@ -60,12 +60,14 @@
 
 <set name="prebuiltBase" value="${ANDROID_NDK_ROOT}/toolchains/${TOOLCHAIN}/prebuilt/${ANDROID_HOST}" />
 
+<set name="TARGET2" value="arm-linux-androideabi-${TOOLCHAIN_VERSION}"  if="HXCPP_CLANG"/>
+<set name="prebuiltBase2" value="${ANDROID_NDK_ROOT}/toolchains/${TARGET2}/prebuilt/${ANDROID_HOST}" if="HXCPP_CLANG"/>
 <path name="${prebuiltBase}/bin" />
 
 <set name="HXCPP_AR" value="${EXEPREFIX}-ar"  unless="HXCPP_CLANG"/>
-<set name="HXCPP_AR" value="${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${ANDROID_HOST}/arm-linux-androideabi/bin/ar"  if="HXCPP_CLANG"/>
-<set name="HXCPP_RANLIB" value="${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${ANDROID_HOST}/arm-linux-androideabi/bin/ranlib"  if="HXCPP_CLANG"/>
-<set name="HXCPP_STRIP" value="${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${ANDROID_HOST}/arm-linux-androideabi/bin/strip"  if="HXCPP_CLANG"/>
+<set name="HXCPP_AR" value="${prebuiltBase}/arm-linux-androideabi/bin/ar"  if="HXCPP_CLANG"/>
+<set name="HXCPP_RANLIB" value="${prebuiltBase}/arm-linux-androideabi/bin/ranlib"  if="HXCPP_CLANG"/>
+<set name="HXCPP_STRIP" value="${prebuiltBase}/arm-linux-androideabi/bin/strip"  if="HXCPP_CLANG"/>
 
 <include name="toolchain/gcc-toolchain.xml"/>
 
@@ -180,7 +182,7 @@
 
 
   <!--  <flag value="-fuse-ld=lld" if="HXCPP_CLANG"/>  -->
-  <flag value="-fuse-ld=${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${ANDROID_HOST}/arm-linux-androideabi/bin/ld.gold" if="HXCPP_CLANG"/>
+  <flag value="-fuse-ld=${prebuiltBase2}/arm-linux-androideabi/bin/ld.gold" if="HXCPP_CLANG"/>
   <ext value=".so"/>
   <outflag value="-o"/>
   <prefix value="lib"/>
@@ -207,6 +209,7 @@
   <section if="HXCPP_CLANG">
     <flag value="-Wl,-undefined suppress" unless="dll_import" />
     <flag value="-Wl,--exclude-libs,libunwind.a" />
+    <flag value="-Wl,--exclude-libs,libgcc.a" />
   </section>
   <flag value="-Wl,--unresolved-symbols=ignore-in-object-files" if="dll_import" />
   <flag value="-Wl,-z,noexecstack" unless="HXCPP_CLANG"/>
@@ -229,23 +232,34 @@
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so"/>
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
+    <lib name="-llog"/>
+    <lib name="-ldl"/>
   </section>
   <section if="HXCPP_CLANG">
+    <flag value="-L${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib"/>
+    <flag value="-L${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a"/>
+    <lib name="${prebuiltBase2}/lib/gcc/arm-linux-androideabi/${TOOLCHAIN_VERSION}.x/armv7-a/crtbegin.o"/>
+    <lib name="${prebuiltBase2}/lib/gcc/arm-linux-androideabi/${TOOLCHAIN_VERSION}.x/armv7-a/libgcc.a"/>
+
     <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libunwind.a"/>
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_static.a"/>
+<!--    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_static.a"/>-->
+    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++abi.a"/>
     <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libandroid_support.a" />
-<!--
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.a"/>
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libstdc++.a"/>
--->
-    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_so.o"/>
-    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so"/>
-    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.a"/>
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libdl.a"/>
 
-<!--
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libandroid_support.a" />
-    <lib name="${ANDROID_NDK_ROOT}/toolchains/arm-linux-androideabi-${TOOLCHAIN_VERSION}/prebuilt/${ANDROID_HOST}/lib/gcc/arm-linux-androideabi/${TOOLCHAIN_VERSION}.x/armv7-a/libgcc.a"/>
--->
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so"/>
+<!--    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_shared.so"/>
+
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libstdc++.so"/>
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>-->
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/liblog.so"/>
+
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtend_so.o"/>
+
 <!--
 
 <lib name="-lstdc++"/>
@@ -256,8 +270,6 @@
 -->
 
   </section>
-  <lib name="-llog"/>
-  <lib name="-ldl"/>
 </linker>
 
 
