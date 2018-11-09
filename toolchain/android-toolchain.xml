@@ -18,6 +18,7 @@
 <set name="HXCPP_CPP11" value="1" if="NDKV9+ || NDKV10+" unless="HXCPP_NO_CPP11" />
 
 <set name="HXCPP_ARMV7" value="1" if="NDKV16+" unless="HXCPP_X86 || HXCPP_ARM64" />
+<unset name="HXCPP_ARMV7" if="HXCPP_X86 || HXCPP_ARM64" />
 
 <!-- Set architecture for clang -->
 <section if="HXCPP_CLANG">
@@ -39,7 +40,8 @@
 
 <section unless="HXCPP_X86">
   <set name="ARCH" value="-v7" if="HXCPP_ARMV7" />
-  <set name="ABI" value="armeabi" />
+  <set name="ABI" value="armeabi" unless="HXCPP_CLANG"/>
+  <set name="ABI" value="armeabi-v7a" if="HXCPP_CLANG"/>
   <set name="PLATFORM_ARCH" value="arch-arm" />
   <set name="TOOLCHAIN" value="arm-linux-androideabi-${TOOLCHAIN_VERSION}"  unless="HXCPP_CLANG"/>
   <set name="EXEPREFIX" value="arm-linux-androideabi" unless="HXCPP_CLANG"/>
@@ -66,9 +68,9 @@
 
 <set name="HXCPP_AR" value="${EXEPREFIX}-ar"  unless="HXCPP_CLANG"/>
 <section if="HXCPP_CLANG">
-  <set name="HXCPP_AR" value="${EXEPREFIX}-ar"  if="HXCPP_CLANG"/>
+  <set name="HXCPP_AR" value="${prebuiltBase2}/bin/${TRIPLE}-ar"  if="HXCPP_CLANG"/>
   <set name="HXCPP_RANLIB" value="${prebuiltBase2}/bin/${TRIPLE}-ranlib"  if="HXCPP_CLANG"/>
-  <set name="HXCPP_STRIP" value="${EXEPREFIX}-strip"  if="HXCPP_CLANG"/>
+  <set name="HXCPP_STRIP" value="${prebuiltBase2}/bin/${TRIPLE}-strip"  if="HXCPP_CLANG"/>
 </section>
 
 <include name="toolchain/gcc-toolchain.xml"/>
@@ -125,7 +127,7 @@
     </section>
     <section if="HXCPP_ARMV7">
        <flag value="-DHXCPP_ARMV7"  />
-       <flag value="-march=armv7-a"  />
+       <flag value="-march=${ABI}"  />
        <flag value="-mfpu=vfpv3-d16"  />
        <flag value="-mfloat-abi=softfp" />
     </section>
@@ -182,7 +184,7 @@
 
 
   <!--  <flag value="-fuse-ld=lld" if="HXCPP_CLANG"/>  -->
-  <flag value="-fuse-ld=${prebuiltBase2}/arm-linux-androideabi/bin/ld.gold" if="HXCPP_CLANG"/>
+  <flag value="-fuse-ld=${prebuiltBase2}/bin/${TRIPLE}-ld.gold" if="HXCPP_CLANG"/>
   <ext value=".so"/>
   <outflag value="-o"/>
   <prefix value="lib"/>
@@ -239,16 +241,16 @@
   </section>
   <section if="HXCPP_CLANG">
     <flag value="-L${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib"/>
-    <flag value="-L${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a"/>
+    <flag value="-L${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}"/>
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_so.o"/>
 <!--    <lib name="${prebuiltBase2}/lib/gcc/arm-linux-androideabi/${TOOLCHAIN_VERSION}.x/armv7-a/crtbegin.o"/>-->
-    <lib name="${prebuiltBase2}/lib/gcc/arm-linux-androideabi/${TOOLCHAIN_VERSION}.x/armv7-a/libgcc.a"/>
+    <lib name="${prebuiltBase2}/lib/gcc/${TRIPLE}/${TOOLCHAIN_VERSION}.x/armv7-a/libgcc.a"/>
 
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libunwind.a"/>
+    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libunwind.a"/>
 <!--    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_static.a"/>-->
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++abi.a"/>
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libandroid_support.a" />
+    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libc++abi.a"/>
+    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libandroid_support.a" />
 <!--    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.a"/>-->
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libstdc++.a"/>
@@ -256,7 +258,7 @@
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libdl.a"/>
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so"/>
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_shared.so"/>
+    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libc++_shared.so"/>
 <!--   
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libstdc++.so"/>
