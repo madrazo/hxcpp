@@ -245,12 +245,12 @@
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_so.o"/>
 <!--    <lib name="${prebuiltBase2}/lib/gcc/arm-linux-androideabi/${TOOLCHAIN_VERSION}.x/armv7-a/crtbegin.o"/>-->
-    <lib name="${prebuiltBase2}/lib/gcc/${TRIPLE}/${TOOLCHAIN_VERSION}.x/armv7-a/libgcc.a"/>
+    <lib name="${prebuiltBase2}/lib/gcc/${TRIPLE}/${TOOLCHAIN_VERSION}.x/libgcc.a"/>
 
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libunwind.a"/>
+    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libunwind.a" unless="HXCPP_ARM64"/>
 <!--    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_static.a"/>-->
     <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libc++abi.a"/>
-    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libandroid_support.a" />
+    <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libandroid_support.a"  unless="HXCPP_ARM64"/>
 <!--    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.a"/>-->
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libstdc++.a"/>
