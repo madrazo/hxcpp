@@ -587,10 +587,11 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
       {
 #if defined(HX_WINRT)
          if (gLoadDebug)
-		 {
+         {
+            hx::strbuf convertBuf1n;
             WINRT_LOG(" module_name: [%s]  extension: [%s]\n", module_name.out_str(&convertBuf), extension.out_str(&convertBuf1n));
-		 }
-		 String testPath = module_name + extension;
+         }
+         String testPath = module_name + extension;
 #else
          String testPath =  sgLibPath[path] +  module_name + extension;
 #endif
